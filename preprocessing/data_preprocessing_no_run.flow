@@ -1,0 +1,278 @@
+{
+  "metadata": {
+    "version": 1,
+    "disable_limits": false
+  },
+  "nodes": [
+    {
+      "node_id": "aafbbb76-c297-4eb1-a879-f2cfbb479393",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "transactions_train.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://ads-508-group-6-raw/transactions_train.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true,
+            "s3FieldDelimiter": ",",
+            "s3DirIncludesNested": false,
+            "s3AddsFilenameColumn": false
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "7ff31a4a-2f8a-49a6-bf3e-7fbd9b5bae66",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {},
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "aafbbb76-c297-4eb1-a879-f2cfbb479393",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "3ae55f1c-a7d6-443f-bd46-f9e71d5e5486",
+      "type": "SOURCE",
+      "operator": "sagemaker.s3_source_0.1",
+      "parameters": {
+        "dataset_definition": {
+          "__typename": "S3CreateDatasetDefinitionOutput",
+          "datasetSourceType": "S3",
+          "name": "customers.csv",
+          "description": null,
+          "s3ExecutionContext": {
+            "__typename": "S3ExecutionContext",
+            "s3Uri": "s3://ads-508-group-6-raw/customers.csv",
+            "s3ContentType": "csv",
+            "s3HasHeader": true,
+            "s3FieldDelimiter": ",",
+            "s3DirIncludesNested": false,
+            "s3AddsFilenameColumn": false
+          }
+        }
+      },
+      "inputs": [],
+      "outputs": [
+        {
+          "name": "default",
+          "sampling": {
+            "sampling_method": "sample_by_limit",
+            "limit_rows": 50000
+          }
+        }
+      ]
+    },
+    {
+      "node_id": "acdfdf02-47ed-4355-ac53-2efe1d9672e2",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.infer_and_cast_type_0.1",
+      "parameters": {},
+      "trained_parameters": {},
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "3ae55f1c-a7d6-443f-bd46-f9e71d5e5486",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "7624530e-951e-47ea-b608-bcf23f71aff9",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.describe_0.1",
+      "parameters": {
+        "name": "table_summary_transactions"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "7ff31a4a-2f8a-49a6-bf3e-7fbd9b5bae66",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "222c4f5d-40c9-4273-bcca-5f8f268fe841",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.duplicate_rows_0.1",
+      "parameters": {
+        "name": "duplicate_rows_transactions"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "7ff31a4a-2f8a-49a6-bf3e-7fbd9b5bae66",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "81fd3d9f-2625-4394-9063-fe923955160a",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.duplicate_rows_0.1",
+      "parameters": {
+        "name": "duplicate_rows_customers"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "acdfdf02-47ed-4355-ac53-2efe1d9672e2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "4bc9a6e5-7430-40ad-a702-05f43f083d39",
+      "type": "VISUALIZATION",
+      "operator": "sagemaker.visualizations.describe_0.1",
+      "parameters": {
+        "name": "table_summary_customers"
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "acdfdf02-47ed-4355-ac53-2efe1d9672e2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "acd715d6-2b48-477a-9e6d-335e7fc0f2db",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.handle_missing_0.1",
+      "parameters": {
+        "operator": "Fill missing",
+        "fill_missing_parameters": {
+          "input_column": [
+            "FN",
+            "Active",
+            "club_member_status",
+            "fashion_news_frequency",
+            "postal_code"
+          ],
+          "fill_value": "N/A"
+        },
+        "impute_parameters": {
+          "column_type": "Numeric",
+          "numeric_parameters": {
+            "strategy": "Approximate Median"
+          }
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "acdfdf02-47ed-4355-ac53-2efe1d9672e2",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "db1fa54c-7125-4bd0-8f4c-e8fe1897009b",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.handle_missing_0.1",
+      "parameters": {
+        "operator": "Impute",
+        "impute_parameters": {
+          "column_type": "Numeric",
+          "numeric_parameters": {
+            "strategy": "Approximate Median",
+            "input_column": "age"
+          }
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "acd715d6-2b48-477a-9e6d-335e7fc0f2db",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    },
+    {
+      "node_id": "4fb9edcb-61c6-4894-a599-101ef0812d30",
+      "type": "TRANSFORM",
+      "operator": "sagemaker.spark.manage_columns_0.1",
+      "parameters": {
+        "operator": "Drop column",
+        "drop_column_parameters": {
+          "column_to_drop": [
+            "sales_channel_id"
+          ]
+        }
+      },
+      "inputs": [
+        {
+          "name": "df",
+          "node_id": "7ff31a4a-2f8a-49a6-bf3e-7fbd9b5bae66",
+          "output_name": "default"
+        }
+      ],
+      "outputs": [
+        {
+          "name": "default"
+        }
+      ]
+    }
+  ]
+}
